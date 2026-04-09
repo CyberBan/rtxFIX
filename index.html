@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RTX 2070 Gigabyte ультра подробный разбор</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'>
+  <rect width='64' height='64' rx='12' fill='%230b0b0b'/>
+  <path d='M41 12a11 11 0 0 0-8 18L18 45a4 4 0 1 0 6 6l15-15a11 11 0 0 0 14-14l-7 7-5-1-1-5 7-7A10.9 10.9 0 0 0 41 12z' fill='%23b91c1c'/>
+  <text x='32' y='58' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-size='8' fill='%23f4f4f5'>RTX 2070</text>
+</svg>"/>
+  <style>
+    :root{
+      --bg:#5f0c0c;
+      --panel:#000000;
+      --border:#3f0a0a;
+      --muted:#a1a1aa;
+      --text:#f4f4f5;
+      --accent:#b91c1c;
+      --warn:#d97706;
+      --line:#27272a;
+      --soft:#170909;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}
+    .wrap{max-width:1500px;margin:0 auto;padding:24px}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+    .panel,.stage-panel{background:#000;border:1px solid var(--border);padding:28px}
+    .full{grid-column:1 / -1}
+    h1,h2,h3,p{margin:0}
+    .eyebrow{font-size:10px;text-transform:uppercase;letter-spacing:.35em;color:#f87171;margin:0 0 10px}
+    .title-main{font-size:52px;letter-spacing:.26em;line-height:1}
+    .lead{margin-top:16px;max-width:950px;color:var(--muted);line-height:1.8;font-size:14px}
+    .between{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+    .stamp{border:1px solid var(--border);padding:10px 12px;font-size:10px;text-transform:uppercase;letter-spacing:.28em;color:var(--muted);white-space:nowrap}
+    .subgrid{margin-top:28px;display:grid;grid-template-columns:1.1fr .9fr;gap:16px}
+    .box{border:1px solid var(--line);padding:18px;position:relative;overflow:hidden}
+    .big-fade{position:absolute;right:-18px;top:8px;font-size:92px;letter-spacing:.28em;color:#111114;pointer-events:none}
+    .bar{height:8px;background:#18181b;margin-top:10px}
+    .bar > div{height:100%;background:var(--accent);width:0%;transition:width .25s ease}
+    .stats{margin-top:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;text-align:center;text-transform:uppercase;letter-spacing:.15em;font-size:12px}
+    .stat{border:1px solid var(--line);padding:14px}
+    .stat strong{display:block;font-size:28px;color:var(--text);margin-bottom:6px}
+    .text{color:#d4d4d8;font-size:14px;line-height:1.95}
+    .muted{color:var(--muted)}
+    .route-list,.fault-list,.tips,.stack{display:flex;flex-direction:column;gap:12px}
+    .route-item,.tip-item,.fault,.problem-item,.screw-item,.detail-card,.legend-item,.test-card{border:1px solid var(--line);padding:16px}
+    .journal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .btns{display:flex;flex-wrap:wrap;gap:8px}
+    button{border:1px solid var(--line);background:#000;color:var(--muted);padding:10px 14px;font-size:11px;text-transform:uppercase;letter-spacing:.22em;cursor:pointer;transition:.18s ease}
+    button:hover{border-color:#52525b;color:#fafafa}
+    button.active-ok{border-color:var(--accent);background:rgba(185,28,28,.25);color:#fff}
+    button.active-issue{border-color:var(--warn);background:rgba(146,64,14,.28);color:#fff}
+    button.active-neutral{border-color:#71717a;color:#fff}
+    .status{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);padding:10px 12px;font-size:10px;text-transform:uppercase;letter-spacing:.24em;color:var(--muted)}
+    .status.ok{border-color:var(--accent);background:rgba(69,10,10,.55);color:#fff}
+    .status.issue{border-color:var(--warn);background:rgba(69,26,3,.48);color:#fff}
+    .stage-layout{display:grid;grid-template-columns:1fr 1fr .95fr;gap:22px}
+    .label{display:block;margin-bottom:10px;font-size:10px;text-transform:uppercase;letter-spacing:.35em;color:#f87171}
+    .checklist{display:flex;flex-direction:column;gap:12px}
+    .check{display:flex;align-items:flex-start;gap:10px;color:#d4d4d8;font-size:14px;line-height:1.65}
+    .check input{margin-top:2px}
+    .hint{margin-top:16px;border:1px solid #2a0d0d;background:rgba(69,10,10,.25);padding:14px;color:#d4d4d8;font-size:14px;line-height:1.8}
+    .summary-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:16px}
+    .notice{border:1px solid #4a1a1a;background:rgba(185,28,28,.10);padding:16px}
+    textarea{width:100%;min-height:150px;resize:vertical;background:#000;color:#e4e4e7;border:1px solid var(--line);padding:14px;outline:none;font:14px/1.7 Arial, Helvetica, sans-serif}
+    textarea:focus{border-color:var(--accent)}
+    .notes-output{margin-top:16px;border:1px solid #2a0d0d;background:rgba(69,10,10,.25);padding:14px;white-space:pre-wrap;color:#d4d4d8;line-height:1.8;display:none}
+    .mini-title{font-size:14px;text-transform:uppercase;letter-spacing:.18em;color:#fff;margin-bottom:10px}
+    .bullets{display:flex;flex-direction:column;gap:8px}
+    .bullet{display:flex;gap:10px;align-items:flex-start;color:#d4d4d8;font-size:14px;line-height:1.8}
+    .num{color:#f87171;font-size:11px;text-transform:uppercase;letter-spacing:.24em;min-width:26px;padding-top:2px}
+    .screw-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .board-layout{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}
+    .board-visual{border:1px solid var(--line);padding:18px;background:#090909}
+    .legend{display:flex;flex-direction:column;gap:10px}
+    .tag{width:18px;height:18px;flex:0 0 18px;border:1px solid rgba(255,255,255,.15)}
+    .tag.power{background:#7f1d1d}
+    .tag.gpu{background:#991b1b}
+    .tag.mem{background:#7c2d12}
+    .tag.vrm{background:#713f12}
+    .tag.io{background:#3f3f46}
+    .tag.fan{background:#1f2937}
+    .schematic{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;align-items:center}
+    .schem-box{border:1px solid var(--line);padding:16px;min-height:78px;display:flex;align-items:center;justify-content:center;text-align:center;background:#080808;color:#e4e4e7;font-size:13px;line-height:1.5}
+    .arrow{display:flex;align-items:center;justify-content:center;color:#f87171;font-size:24px}
+    .tests-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .program{display:inline-block;border:1px solid var(--border);padding:3px 8px;margin:2px 6px 2px 0;font-size:12px;letter-spacing:.08em;color:#f1f5f9}
+    @media (max-width: 1180px){
+      .grid,.subgrid,.journal-grid,.summary-grid,.stage-layout,.screw-grid,.board-layout,.tests-grid,.schematic{grid-template-columns:1fr}
+      .full{grid-column:auto}
+      .title-main{font-size:36px;letter-spacing:.16em}
+      .wrap{padding:14px}
+      .panel,.stage-panel{padding:18px}
+      .between{flex-direction:column}
+      .arrow{transform:rotate(90deg)}
+    }
+  
+    html{scroll-behavior:smooth}
+    @keyframes fadeUp{
+      from{opacity:0;transform:translateY(20px)}
+      to{opacity:1;transform:translateY(0)}
+    }
+    @keyframes glowPulse{
+      0%,100%{box-shadow:0 0 0 rgba(185,28,28,0)}
+      50%{box-shadow:0 0 24px rgba(185,28,28,.18)}
+    }
+    @keyframes sweep{
+      0%{transform:translateX(-130%) skewX(-18deg)}
+      100%{transform:translateX(220%) skewX(-18deg)}
+    }
+    @keyframes barLoad{
+      from{filter:brightness(.8)}
+      to{filter:brightness(1.15)}
+    }
+    @keyframes floatSlow{
+      0%,100%{transform:translateY(0)}
+      50%{transform:translateY(-4px)}
+    }
+    @keyframes boardBlink{
+      0%,100%{opacity:.9}
+      50%{opacity:1}
+    }
+    .panel,.stage-panel{
+      animation:fadeUp .7s ease both;
+    }
+    .panel:nth-child(2), .stage-panel:nth-child(2){animation-delay:.05s}
+    .panel:nth-child(3), .stage-panel:nth-child(3){animation-delay:.1s}
+    .panel:nth-child(4), .stage-panel:nth-child(4){animation-delay:.15s}
+    .panel:nth-child(5), .stage-panel:nth-child(5){animation-delay:.2s}
+    .box,.route-item,.fault,.problem-item,.screw-item,.detail-card,.legend-item,.test-card{
+      transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease,background-color .22s ease;
+      position:relative;
+    }
+    .box:hover,.route-item:hover,.fault:hover,.problem-item:hover,.screw-item:hover,.detail-card:hover,.legend-item:hover,.test-card:hover{
+      transform:translateY(-3px);
+      border-color:#7f1d1d;
+      box-shadow:0 10px 28px rgba(0,0,0,.28);
+      background:linear-gradient(180deg, rgba(185,28,28,.06), rgba(0,0,0,0));
+    }
+    .box::after,.route-item::after,.fault::after,.problem-item::after,.screw-item::after,.detail-card::after,.legend-item::after,.test-card::after{
+      content:"";
+      position:absolute;
+      top:0; bottom:0; left:0;
+      width:34px;
+      background:linear-gradient(90deg, transparent, rgba(255,255,255,.07), transparent);
+      transform:translateX(-130%) skewX(-18deg);
+      pointer-events:none;
+      opacity:0;
+    }
+    .box:hover::after,.route-item:hover::after,.fault:hover::after,.problem-item:hover::after,.screw-item:hover::after,.detail-card:hover::after,.legend-item:hover::after,.test-card:hover::after{
+      opacity:1;
+      animation:sweep .8s ease;
+    }
+    .bar > div{
+      animation:barLoad 1.2s ease-in-out infinite alternate;
+      transition:width .35s ease;
+    }
+    .big-fade{
+      animation:floatSlow 6s ease-in-out infinite;
+    }
+    .status.ok{
+      animation:glowPulse 2.2s ease-in-out infinite;
+    }
+    button{
+      transition:transform .16s ease,border-color .18s ease,color .18s ease,background-color .18s ease,box-shadow .18s ease;
+    }
+    button:hover{
+      transform:translateY(-2px);
+      box-shadow:0 8px 20px rgba(0,0,0,.22);
+    }
+    button:active{transform:translateY(0) scale(.98)}
+    .board-visual svg rect,
+    .board-visual svg text{
+      transition:filter .2s ease, transform .2s ease, opacity .2s ease;
+    }
+    .board-visual svg rect:hover{
+      filter:brightness(1.15);
+    }
+    .board-visual svg{
+      animation:boardBlink 5s ease-in-out infinite;
+    }
+    .schem-box{
+      transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease;
+    }
+    .schem-box:hover{
+      transform:translateY(-3px);
+      border-color:#7f1d1d;
+      box-shadow:0 10px 24px rgba(0,0,0,.25);
+    }
+    .arrow{
+      animation:floatSlow 3.5s ease-in-out infinite;
+    }
+    .program{
+      transition:background-color .18s ease,border-color .18s ease,transform .18s ease;
+    }
+    .program:hover{
+      background:rgba(185,28,28,.14);
+      border-color:#7f1d1d;
+      transform:translateY(-1px);
+    }
+    .reveal{
+      opacity:0;
+      transform:translateY(18px);
+      transition:opacity .6s ease, transform .6s ease;
+    }
+    .reveal.visible{
+      opacity:1;
+      transform:translateY(0);
+    }
+
+  
+    .grid{align-items:start}
+    .panel,.stage-panel{min-width:0}
+    .stage-layout > div,.board-layout > div,.tests-grid > div,.screw-grid > div,.journal-grid > div,.summary-grid > div{min-width:0}
+    .board-visual svg{display:block;max-width:100%;height:auto}
+    .legend-item strong{display:block;margin-bottom:6px}
+    .fault{align-items:flex-start}
+    .fault > div:first-child,.bullet span:last-child,.text{word-break:break-word}
+    .check span{min-width:0}
+    textarea{display:block}
+
+  
+    .brand-badge{
+      display:inline-flex;
+      align-items:center;
+      gap:12px;
+      border:1px solid var(--border);
+      padding:10px 14px;
+      background:linear-gradient(180deg, rgba(185,28,28,.10), rgba(0,0,0,0));
+      box-shadow:0 8px 22px rgba(0,0,0,.22);
+    }
+    .brand-icon{
+      width:36px;
+      height:36px;
+      flex:0 0 36px;
+      display:block;
+    }
+    .brand-text{
+      display:flex;
+      flex-direction:column;
+      line-height:1.1;
+    }
+    .brand-text strong{
+      font-size:12px;
+      letter-spacing:.22em;
+      text-transform:uppercase;
+      color:#f4f4f5;
+      font-weight:700;
+    }
+    .brand-text span{
+      margin-top:3px;
+      font-size:9px;
+      letter-spacing:.28em;
+      text-transform:uppercase;
+      color:#a1a1aa;
+    }
+
+  
+    .brand-badge{
+      padding:16px 20px !important;
+      gap:16px !important;
+    }
+    .brand-icon{
+      width:48px !important;
+      height:48px !important;
+      flex:0 0 48px !important;
+    }
+    .brand-text strong{
+      font-size:22px !important;
+      font-weight:800 !important;
+      letter-spacing:.10em !important;
+      line-height:1.05 !important;
+    }
+    .brand-text span{
+      margin-top:6px !important;
+      font-size:16px !important;
+      font-weight:700 !important;
+      letter-spacing:.03em !important;
+      color:#f4f4f5 !important;
+      white-space:normal !important;
+      line-height:1.25 !important;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="grid">
+
+      <section class="reveal panel full">
+        <div class="between">
+          <div class="brand-badge">
+            <svg class="brand-icon" viewBox="0 0 64 64" aria-hidden="true">
+              <rect width="64" height="64" rx="12" fill="#0b0b0b"></rect>
+              <path d="M41 12a11 11 0 0 0-8 18L18 45a4 4 0 1 0 6 6l15-15a11 11 0 0 0 14-14l-7 7-5-1-1-5 7-7A10.9 10.9 0 0 0 41 12z" fill="#b91c1c"></path>
+            </svg>
+            <div class="brand-text">
+              <strong>Схема разбора RTX</strong>
+              <span>Gigabyte GeForce RTX 2070 GAMING OC 8G</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="reveal panel">
+        <div class="between" style="margin-bottom:16px">
+          <p class="eyebrow" style="margin:0">Маршрут разбора</p>
+          <p class="stamp" style="padding:0;border:none">маршрут</p>
+        </div>
+        <div class="route-list" id="routeList"></div>
+      </section>
+
+      <section class="reveal panel">
+        <div class="between" style="margin-bottom:16px">
+          <p class="eyebrow" style="margin:0">Группы винтов</p>
+          <p class="stamp" style="padding:0;border:none">крепёж</p>
+        </div>
+        <div class="screw-grid" id="screwGrid"></div>
+      </section>
+
+      <section class="reveal panel full">
+        <div class="between" style="margin-bottom:16px">
+          <p class="eyebrow" style="margin:0">Журнал симптомов</p>
+          <p class="stamp" style="padding:0;border:none">отметки</p>
+        </div>
+        <div class="journal-grid" id="journalGrid"></div>
+      </section>
+
+      <section class="full" id="stagesMount" style="display:flex;flex-direction:column;gap:16px;"></section>
+
+      <section class="reveal panel full">
+        <div class="between" style="margin-bottom:16px">
+          <div>
+            <p class="eyebrow">Схема платы</p>
+            <h2 style="font-size:34px;letter-spacing:.2em">Расположение зон</h2>
+          </div>
+        </div>
+
+        <div class="board-layout">
+          <div class="board-visual">
+            <svg viewBox="0 0 1100 520" width="100%" height="100%" aria-label="Схема платы RTX 2070">
+              <rect x="40" y="70" width="900" height="360" rx="18" fill="#101010" stroke="#3f3f46" stroke-width="3"/>
+              <rect x="930" y="120" width="90" height="250" rx="8" fill="#18181b" stroke="#52525b" stroke-width="2"/>
+              <text x="975" y="150" text-anchor="middle" fill="#f4f4f5" font-size="18">ПЛАНКА</text>
+              <rect x="90" y="35" width="130" height="42" rx="8" fill="#7f1d1d" stroke="#ef4444" stroke-width="2"/>
+              <text x="155" y="62" text-anchor="middle" fill="#fff" font-size="18">8-pin / 6-pin</text>
+              <rect x="320" y="150" width="200" height="150" rx="12" fill="#991b1b" stroke="#f87171" stroke-width="3"/>
+              <text x="420" y="220" text-anchor="middle" fill="#fff" font-size="26">GPU TU106</text>
+              <rect x="280" y="95" width="70" height="42" rx="8" fill="#7c2d12" stroke="#fb923c" stroke-width="2"/>
+              <rect x="380" y="95" width="70" height="42" rx="8" fill="#7c2d12" stroke="#fb923c" stroke-width="2"/>
+              <rect x="480" y="95" width="70" height="42" rx="8" fill="#7c2d12" stroke="#fb923c" stroke-width="2"/>
+              <rect x="560" y="170" width="70" height="42" rx="8" fill="#7c2d12" stroke="#fb923c" stroke-width="2"/>
+              <rect x="560" y="238" width="70" height="42" rx="8" fill="#7c2d12" stroke="#fb923c" stroke-width="2"/>
+              <rect x="280" y="314" width="70" height="42" rx="8" fill="#7c2d12" stroke="#fb923c" stroke-width="2"/>
+              <rect x="380" y="314" width="70" height="42" rx="8" fill="#7c2d12" stroke="#fb923c" stroke-width="2"/>
+              <rect x="480" y="314" width="70" height="42" rx="8" fill="#7c2d12" stroke="#fb923c" stroke-width="2"/>
+              <rect x="100" y="150" width="150" height="190" rx="12" fill="#713f12" stroke="#f59e0b" stroke-width="2"/>
+              <text x="175" y="220" text-anchor="middle" fill="#fff" font-size="24">VRM</text>
+              <text x="175" y="252" text-anchor="middle" fill="#fde68a" font-size="16">дроссели / MOSFET /</text>
+              <text x="175" y="274" text-anchor="middle" fill="#fde68a" font-size="16">драйверы / ШИМ</text>
+              <rect x="820" y="145" width="90" height="72" rx="8" fill="#3f3f46" stroke="#a1a1aa" stroke-width="2"/>
+              <text x="865" y="189" text-anchor="middle" fill="#fff" font-size="18">HDMI</text>
+              <rect x="820" y="245" width="90" height="110" rx="8" fill="#3f3f46" stroke="#a1a1aa" stroke-width="2"/>
+              <text x="865" y="290" text-anchor="middle" fill="#fff" font-size="18">DP</text>
+              <text x="865" y="315" text-anchor="middle" fill="#fff" font-size="18">DP</text>
+              <text x="865" y="340" text-anchor="middle" fill="#fff" font-size="18">DP</text>
+              <rect x="650" y="92" width="125" height="48" rx="8" fill="#1f2937" stroke="#60a5fa" stroke-width="2"/>
+              <text x="712" y="121" text-anchor="middle" fill="#fff" font-size="16">FAN / RGB</text>
+              <text x="145" y="105" fill="#fca5a5" font-size="16">Питание сверху</text>
+              <text x="654" y="80" fill="#93c5fd" font-size="16">Шлейфы кулеров</text>
+              <text x="432" y="380" fill="#fdba74" font-size="16">Память вокруг GPU</text>
+              <text x="142" y="365" fill="#fde68a" font-size="16">Силовая часть</text>
+              <text x="810" y="390" fill="#d4d4d8" font-size="16">Видеовыходы у планки</text>
+            </svg>
+          </div>
+
+          <div class="legend">
+            <div class="reveal legend-item"><span class="tag power"></span><div><strong>Питание 8-pin / 6-pin</strong><div class="text">Смотри подгар пластика, люфт разъёма, потемнение, следы перегрева и плохой контакт кабеля.</div></div></div>
+            <div class="reveal legend-item"><span class="tag gpu"></span><div><strong>GPU TU106</strong><div class="text">Смотри сколы углов, кривой отпечаток пасты, следы перегрева и неравномерный прижим радиатора.</div></div></div>
+            <div class="reveal legend-item"><span class="tag mem"></span><div><strong>Память GDDR6</strong><div class="text">При артефактах и коде 43 смотри именно эту зону, плюс прокладки памяти и локальный перегрев рядом.</div></div></div>
+            <div class="reveal legend-item"><span class="tag vrm"></span><div><strong>VRM</strong><div class="text">Ищи трещины, подгар, вздутые конденсаторы, потемневший лак и любой след силовой аварии.</div></div></div>
+            <div class="reveal legend-item"><span class="tag io"></span><div><strong>HDMI / DisplayPort</strong><div class="text">Смотри люфт, перекос, вмятины и следы механического удара в районе планки.</div></div></div>
+            <div class="reveal legend-item"><span class="tag fan"></span><div><strong>Шлейфы кулеров и подсветки</strong><div class="text">Если вентиляторы не работают после сборки, первым делом вспоминай именно эти разъёмы.</div></div></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="reveal panel full">
+        <div class="between" style="margin-bottom:16px">
+          <div>
+            <p class="eyebrow">Электросхема</p>
+            <h2 style="font-size:34px;letter-spacing:.2em">Питание и сигналы</h2>
+          </div>
+        </div>
+        <div class="schematic">
+          <div class="schem-box">PCI-E слот<br>+<br>8-pin / 6-pin</div>
+          <div class="arrow">→</div>
+          <div class="schem-box">Входное питание<br>и фильтрация</div>
+          <div class="arrow">→</div>
+          <div class="schem-box">VRM ядра и памяти</div>
+          <div class="schem-box">Контроллеры вентиляторов<br>и подсветки</div>
+          <div class="arrow">→</div>
+          <div class="schem-box">GPU TU106</div>
+          <div class="arrow">→</div>
+          <div class="schem-box">Память GDDR6</div>
+          <div class="schem-box">BIOS / логика запуска</div>
+          <div class="arrow">→</div>
+          <div class="schem-box">Инициализация карты</div>
+          <div class="arrow">→</div>
+          <div class="schem-box">HDMI / DisplayPort</div>
+        </div>
+        <div class="notice text" style="margin-top:16px">
+          Эта блок-схема нужна не для пайки по элементам, а чтобы понимать логику диагностики. Если нет картинки не всегда виноват сам GPU: до него есть питание, VRM, запуск, BIOS и видеовыходы.
+        </div>
+      </section>
+
+      <section class="reveal panel full">
+        <div class="between" style="margin-bottom:16px">
+          <div>
+            <p class="eyebrow">Проверки при штатном питании</p>
+            <h2 style="font-size:34px;letter-spacing:.2em">Порядок тестов</h2>
+          </div>
+        </div>
+        <div class="notice text" style="margin-bottom:16px">
+          Здесь речь только о безопасных пользовательских тестах: карта установлена в рабочий ПК или тестовый стенд, питание подано через нормальный БП и штатные кабели.
+        </div>
+        <div class="tests-grid">
+          <div class="reveal test-card">
+            <div class="mini-title">Этап 1 старт без нагрузки</div>
+            <div class="bullets">
+              <div class="bullet"><span class="num">01</span><span>Установи карту в рабочую систему и подключи один проверенный монитор.</span></div>
+              <div class="bullet"><span class="num">02</span><span>Смотри: есть ли изображение и определяется ли карта.</span></div>
+              <div class="bullet"><span class="num">03</span><span>Используй: <span class="program">GPU-Z</span> <span class="program">HWiNFO</span> <span class="program">Диспетчер устройств</span></span></div>
+            </div>
+          </div>
+          <div class="reveal test-card">
+            <div class="mini-title">Этап 2 температуры и вентиляторы</div>
+            <div class="bullets">
+              <div class="bullet"><span class="num">01</span><span>Оставь систему в покое на несколько минут.</span></div>
+              <div class="bullet"><span class="num">02</span><span>Используй: <span class="program">HWiNFO</span> <span class="program">GPU-Z</span> <span class="program">MSI Afterburner</span></span></div>
+              <div class="bullet"><span class="num">03</span><span>Смотри температуру в простое, поведение вентиляторов и скачки температуры.</span></div>
+            </div>
+          </div>
+          <div class="reveal test-card">
+            <div class="mini-title">Этап 3 проверка драйвера</div>
+            <div class="bullets">
+              <div class="bullet"><span class="num">01</span><span>Переходи к установке драйвера NVIDIA, если карта видится базово.</span></div>
+              <div class="bullet"><span class="num">02</span><span>Используй: <span class="program">NVIDIA Driver</span> <span class="program">DDU</span></span></div>
+              <div class="bullet"><span class="num">03</span><span>Проверь: ставится ли драйвер без ошибки и нет ли кода 43.</span></div>
+            </div>
+          </div>
+          <div class="reveal test-card">
+            <div class="mini-title">Этап 4 лёгкая графическая проверка</div>
+            <div class="bullets">
+              <div class="bullet"><span class="num">01</span><span>После драйвера запускай сначала лёгкий 3D-тест.</span></div>
+              <div class="bullet"><span class="num">02</span><span>Используй: <span class="program">Unigine Heaven</span> <span class="program">Unigine Superposition</span> <span class="program">3DMark Demo</span></span></div>
+              <div class="bullet"><span class="num">03</span><span>Ищи: артефакты, моргание текстур, вылет драйвера, резкий рост температуры.</span></div>
+            </div>
+          </div>
+          <div class="reveal test-card">
+            <div class="mini-title">Этап 5 стресс-тест</div>
+            <div class="bullets">
+              <div class="bullet"><span class="num">01</span><span>Только если предыдущие шаги прошли нормально, переходи к тяжёлой нагрузке.</span></div>
+              <div class="bullet"><span class="num">02</span><span>Используй: <span class="program">OCCT GPU</span> <span class="program">FurMark</span> <span class="program">3DMark Stress Test</span></span></div>
+              <div class="bullet"><span class="num">03</span><span>Смотри: держит ли карта нагрузку и не уходит ли в чёрный экран.</span></div>
+            </div>
+          </div>
+          <div class="reveal test-card">
+            <div class="mini-title">Этап 6 проверка памяти</div>
+            <div class="bullets">
+              <div class="bullet"><span class="num">01</span><span>Если подозрение на память или артефакты, делай отдельный упор на VRAM.</span></div>
+              <div class="bullet"><span class="num">02</span><span>Используй: <span class="program">OCCT VRAM</span> <span class="program">Video Memory Stress Test</span> <span class="program">MATS/MODS</span></span></div>
+              <div class="bullet"><span class="num">03</span><span>Проверь: ошибки памяти и вылеты именно на VRAM-нагрузке.</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="reveal panel full">
+        <div class="between" style="margin-bottom:18px">
+          <div>
+            <p class="eyebrow">Неисправности</p>
+            <h2 style="font-size:34px; letter-spacing:.22em;">Сценарии</h2>
+          </div>
+        </div>
+        <div class="reveal fault-list" id="faultList"></div>
+      </section>
+
+      <section class="reveal panel full">
+        <div class="between" style="margin-bottom:18px">
+          <div>
+            <p class="eyebrow">Подсказки по симптомам</p>
+            <h2 style="font-size:34px; letter-spacing:.22em;">Куда идти дальше</h2>
+          </div>
+        </div>
+        <div class="tips" id="tipsList"></div>
+        <div class="reveal box" style="margin-top:16px">
+          <label class="label">Заметки мастера</label>
+          <textarea id="notes" placeholder="Запиши: на каком этапе упёрся, что было подозрительным, какой винт шёл туго, где была сухая паста, как лежали прокладки..."></textarea>
+        </div>
+      </section>
+
+      <section class="reveal panel full">
+        <div class="between" style="margin-bottom:18px">
+          <div>
+            <p class="eyebrow">Итог</p>
+            <h2 style="font-size:34px; letter-spacing:.22em;">Финальный вывод</h2>
+          </div>
+        </div>
+        <div class="summary-grid">
+          <div class="reveal box">
+            <span class="label">Сводка</span>
+            <p class="text">Этапов в норме: <span id="sumNormal">0</span></p>
+            <p class="text">Этапов с проблемой: <span id="sumIssue">0</span></p>
+            <p class="text">Завершено этапов: <span id="sumCompleted">0 / 9</span></p>
+            <p class="text">Прогресс диагностики: <span id="sumProgress">0%</span></p>
+          </div>
+          <div class="reveal box">
+            <span class="label">Итог по карте</span>
+            <h3 id="finalTitle" style="font-size:18px; text-transform:uppercase; letter-spacing:.16em; margin-bottom:12px;">Итог: разбор ещё не завершён</h3>
+            <p id="finalBody" class="text">Некоторые этапы не отмечены. Не перескакивай через шаги последовательность тут важнее скорости.</p>
+            <div class="notes-output" id="notesOutput"></div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const route = [
+      "1. Положи карту вентиляторами вверх.",
+      "2. Осмотри кожух, вентиляторы, разъёмы, следы удара, подгар и пыль.",
+      "3. Переверни карту backplate вверх и зафиксируй расположение винтов до первого откручивания.",
+      "4. Раздели винты на группы: backplate, 4 подпружиненных вокруг GPU и крепёж радиатора.",
+      "5. Ослабляй 4 подпружиненных винта крест-накрест, без перекоса.",
+      "6. Сними оставшиеся винты радиатора и только потом отделяй его.",
+      "7. Приподнимай радиатор очень аккуратно, сначала проверив шлейфы вентиляторов и подсветки.",
+      "8. После снятия охлаждения осматривай GPU, память, прокладки, VRM, питание и видеовыходы.",
+      "9. Сборка идёт строго в обратном порядке: прокладки на место, паста нормально, шлейфы подключены, затяжка без фанатизма."
+    ];
+
+    const screwGroups = [
+      { title: "Группа A винты backplate", text: "Обычные винты задней металлической пластины. Их задача держать backplate. Их нельзя мешать с прижимными винтами GPU." },
+      { title: "Группа B 4 подпружиненных винта вокруг GPU", text: "Это силовые винты прижима радиатора к чипу. Их ослабляют крест-накрест и понемногу, а не один до конца." },
+      { title: "Группа C оставшиеся винты радиаторного узла", text: "После пружинных часто остаются ещё винты, которые продолжают держать радиатор. Пока они стоят, радиатор нельзя дёргать силой." },
+      { title: "Группа D дополнительный крепёж глубокой разборки", text: "Это винты, которые трогают уже при глубокой разборке, а не для первого поверхностного осмотра." }
+    ];
+
+    const stagesData = [
+      { id:"stage1", step:"01", title:"Положение карты и первый осмотр без инструмента",
+        technical:"Разбор начинается не с откручивания, а с правильного положения карты. Видеокарту нужно положить вентиляторами вверх на ровную непроводящую поверхность. На этом шаге оценивается общее механическое состояние: кожух, геометрия кулера, состояние лопастей, планка видеовыходов и верхняя кромка платы, где подводится дополнительное питание.",
+        simple:"Сначала просто положи карту вентиляторами вверх и смотри на неё как на предмет. Не ковыряй пока ничего. Здесь ты ищешь всё, что видно без разбора: трещины, кривые вентиляторы, следы удара, сломанные лопасти, подгоревший разъём питания, перекошенную планку HDMI/DP.",
+        checks:["Карта лежит ровно и не на металле","Все три вентилятора визуально целые","Кожух не треснут и не перекошен","Разъёмы видеовыходов не утоплены и не болтаются"],
+        problems:["Лопасть сломана или крыльчатка задевает кожух","Следы падения на углах или планке","Потемнение в зоне питания","Сильный перекос внешнего корпуса"],
+        donts:["Не переворачивай карту резко и не хватай её за вентиляторы","Не начинай сразу выкручивать первые попавшиеся винты","Не дави пальцами на центр кожуха над зоной GPU"],
+        conclusions:["Если внешний вид чистый значит пляшем дальше к фиксации винтов","Если уже тут есть подгар или сильный удар вероятна реальная поломка","Если вентилятор заедает проблема может быть механической, а не в чипе"] },
+      { id:"stage2", step:"02", title:"Фиксация раскладки винтов до первого откручивания",
+        technical:"Перед вмешательством необходимо сфотографировать заднюю сторону и разделить винты по типам: винты задней пластины, подпружиненные винты прижима GPU, прочие винты радиаторного узла. Это снижает риск спутать длину винтов и создать перекос при сборке.",
+        simple:"Сфотографируй винты и сразу раздели их по группам.",
+        checks:["Сделано фото задней стороны до разбора","Понятно, где пружинные винты вокруг GPU","Есть отдельные зоны/подписи для хранения винтов","Бита отвёртки подходит по размеру и не болтается"],
+        problems:["Срыв шлица неподходящей битой","Потеря порядка крепежа","Смешивание коротких и длинных винтов","Непонимание, какой винт силовой, а какой панельный"],
+        donts:["Не выкручивай винт, если бита в нём люфтит","Не складывай винты наобум в одну кучку","Не игнорируй подпружиненные винты это отдельная группа"],
+        conclusions:["Если раскладка понятна значит пляшем дальше","Если уже здесь винты сорваны или стоят неродные карту уже могли разбирать раньше","Если винт не идёт сразу перепроверь биту и усилие"] },
+      { id:"stage3", step:"03", title:"Снятие обычных винтов backplate",
+        technical:"Сначала снимаются не силовые прижимные элементы, а винты, которые удерживают заднюю пластину как конструктивный элемент.",
+        simple:"Сначала работаем с обычными винтами задней пластины. Пружинные вокруг чипа не трогаем наугад.",
+        checks:["Снимаются только обычные винты backplate","Каждый винт выкручивается без перекоса отвёртки","Пружинные винты вокруг GPU пока не смешаны с этой группой","Винты этой группы отложены отдельно"],
+        problems:["Сорванный шлиц","Один винт идёт туже остальных","Плата начинает изгибаться под давлением руки","Есть признаки прошлой неаккуратной разборки"],
+        donts:["Не нажимай на плату всем весом ради тугого винта","Не называй одинаковыми все винты подряд","Не выдирай backplate, если часть крепежа ещё не снята"],
+        conclusions:["Если винты снялись спокойно значит пляшем дальше","Если винт сорван или закушен потом при сборке удели этой точке внимание","Если backplate сидит плотно после снятия части крепежа это ещё не значит, что что-то сломано"] },
+      { id:"stage4", step:"04", title:"Ослабление 4 подпружиненных винтов прижима GPU",
+        technical:"Подпружиненные винты вокруг зоны GPU обеспечивают равномерный прижим радиатора к кристаллу. Их нужно ослаблять диагонально и постепенно.",
+        simple:"Теперь самые ответственные винты. Их нельзя выкрутить так: один до конца, потом второй. Нормальная логика по чуть-чуть крест-накрест.",
+        checks:["Ослабление идёт по диагонали","Каждый винт отпускается понемногу","Пружины не потеряны и не перекошены","Плата не выгибается под рукой"],
+        problems:["Кривой прижим радиатора","Срыв резьбы или шлица","Потеря пружины","Резкое освобождение одного угла"],
+        donts:["Не выкручивай один угол до конца первым","Не дави на текстолит всей ладонью","Не пытайся провернуть винт под углом"],
+        conclusions:["Если всё ослабляется ровно значит пляшем дальше","Если один угол шёл явно легче/тяжелее при сборке проверь прижим","Если пружина потерялась или перекосилась не продолжай как ни в чём не бывало"] },
+      { id:"stage5", step:"05", title:"Снятие оставшихся винтов радиаторного узла",
+        technical:"После освобождения пружинных винтов радиатор может всё ещё оставаться связанным с платой дополнительными винтами. Пока они стоят, радиатор нельзя отделять силой.",
+        simple:"Если радиатор не идёт, не тяни его силой проверь оставшийся крепёж.",
+        checks:["Найдены и сняты оставшиеся винты задней стороны","Радиатор не тянут силой до снятия всех винтов","Винты этой группы отмечены отдельно","Крепёж снят без перекоса"],
+        problems:["Попытка сорвать радиатор на оставшемся винте","Треска стойки или рамки крепления","Изгиб текстолита","Смещение радиатора при не до конца снятом крепеже"],
+        donts:["Не поддевай радиатор металлическим предметом","Не дёргай вверх, пока не уверен, что все винты этой группы сняты","Не путай эти винты с обычными винтами backplate"],
+        conclusions:["Если радиаторный узел освобождён значит пляшем дальше","Если радиатор всё равно не идёт почти наверняка пропущен винт или его держит паста","Если чувствуется жёсткое сопротивление, не увеличивай силу без перепроверки"] },
+      { id:"stage6", step:"06", title:"Отделение радиатора и работа со шлейфами",
+        technical:"После полного снятия крепежа радиаторный узел можно аккуратно приподнимать. Однако радиатор не должен полностью отходить, пока не найдены и не отключены шлейфы вентиляторов и подсветки.",
+        simple:"Поднял кулер и сразу не разводи половинки в стороны. Сначала смотри, что их держит. Обычно это шлейфы.",
+        checks:["Кулер поднимается без рывка","Шлейфы найдены до полного открытия","Разъёмы отсоединены аккуратно, не за провод","Ничего не висит на натяге"],
+        problems:["Оторванный шлейф","Оторванный коннектор на плате","Радиатор прилип из-за сухой пасты","Лишний изгиб платы во время раскрытия"],
+        donts:["Не тяни за провод шлейфа","Не раскрывай карту как книгу на полный угол, пока всё не отключено","Не крути радиатор по оси, если он прилип к чипу"],
+        conclusions:["Если шлейфы сняты спокойно значит пляшем дальше","Если радиатор очень прилип проблема может быть просто в засохшей пасте","Если коннектор уже болтается это отдельный дефект"] },
+      { id:"stage7", step:"07", title:"Осмотр GPU, памяти и термоинтерфейсов",
+        technical:"После снятия охлаждения оцениваются: кристалл GPU, наличие сколов и микротрещин, равномерность отпечатка термопасты, состояние микросхем памяти GDDR6 вокруг ядра, положение термопрокладок и признаки локального перегрева.",
+        simple:"Осмотри чип, память и прокладки. Важны не только сколы, но и отпечаток пасты и контакт прокладок.",
+        checks:["На GPU нет сколов и явных царапин","Термопаста распределена более-менее равномерно","Чипы памяти без трещин и сколов","Прокладки не порваны и реально касались своих элементов"],
+        problems:["Скол угла GPU","Сухая паста комком или камнем","Смятая или съехавшая прокладка","Следы перегрева вокруг памяти"],
+        donts:["Не тыкай в кристалл отвёрткой или ногтем","Не сдирай прокладки резко","Не размазывай старую пасту по всей плате"],
+        conclusions:["Если отпечаток пасты ровный и прокладки лежали правильно значит пляшем дальше","Если паста лежала пятном только с одного края прижим был неравномерный","Если прокладка не доставала до элемента перегрев этой зоны очень вероятен"] },
+      { id:"stage8", step:"08", title:"Осмотр VRM, питания и видеовыходов",
+        technical:"После осмотра ядра необходимо пройти по силовой части: дроссели, MOSFET, драйверы, ШИМ, конденсаторы, а также зоны входного питания и видеовыходов.",
+        simple:"Теперь смотри не на чип, а на окружение: питание, VRM, порты. Именно тут часто видно гарь, трещины, сколотые силовые элементы и болтающиеся HDMI/DP.",
+        checks:["В силовой зоне нет потемнения и гари","Конденсаторы ровные и не вздуты","Разъём питания без подгара и люфта","HDMI/DP не шатаются и не перекошены"],
+        problems:["Треснувший силовой элемент","Подгоревший участок VRM","Вздутый или сдвинутый конденсатор","Расшатанный видеовыход"],
+        donts:["Не дави на элементы VRM отвёрткой","Не выравнивай порты силой на весу","Не игнорируй даже маленькое потемнение возле питания"],
+        conclusions:["Если силовая часть визуально чистая значит пляшем дальше","Если есть подгар даже без мультиметра это уже серьёзный сигнал","Если порт люфтит, проблема может быть механической"] },
+      { id:"stage9", step:"09", title:"Обратная сборка",
+        technical:"После завершения осмотра сборка выполняется строго в обратной последовательности: термопрокладки возвращаются в исходные зоны, наносится новый термоинтерфейс при необходимости, шлейфы подключаются до финального закрытия, а винты затягиваются без перекоса и без избыточного момента.",
+        simple:"Собирай карту в обратном порядке: шлейфы, прокладки, паста и равномерная затяжка.",
+        checks:["Все шлейфы подключены обратно","Прокладки вернулись на свои места","Паста нанесена нормально, без горы и без пустоты","Винты затянуты равномерно и без перекоса"],
+        problems:["Остался лишний винт после сборки","Забытый шлейф вентилятора","Прокладка лежит не в своей зоне","Перетянут один угол радиатора"],
+        donts:["Не затягивай винты до упора одним движением","Не собирай карту, если не уверен, что прокладки лежат правильно","Не закрывай карту окончательно, пока не проверил все разъёмы"],
+        conclusions:["Если всё собрано ровно значит пляшем дальше к тесту уже в системе","Если после сборки остался винт это повод открыть снова","Если после сборки выросла температура ищи проблему в прижиме, пасте или прокладках"] }
+    ];
+
+    const journalFields = [
+      { key: "fans", label: "Вентиляторы" },
+      { key: "image", label: "Изображение" },
+      { key: "drivers", label: "Драйвер" },
+      { key: "artifacts", label: "Артефакты" },
+      { key: "temp", label: "Температура" },
+      { key: "power", label: "Питание" }
+    ];
+
+    const faults = [
+      ["Чёрный экран", "Начинай с питания, посадки карты, разъёмов HDMI/DP, потом переходи к GPU и силовой зоне"],
+      ["Код 43 / драйвер не ставится", "В первую очередь смотри память, GPU, следы прошлой пайки и всё подозрительное вокруг чипа"],
+      ["Артефакты", "Смотри память GDDR6, прокладки памяти, перегрев рядом с чипами и равномерность охлаждения"],
+      ["Перегрев", "Проверь прижим радиатора, термопасту, прокладки и состояние всех трёх вентиляторов"],
+      ["Нестабильность под нагрузкой", "Смотри VRM, питание, подгар, плохой прижим и всё, что выглядит перегретым"]
+    ];
+
+    const state = {
+      stageStatus: Object.fromEntries(stagesData.map(s => [s.id, "pending"])),
+      checklist: Object.fromEntries(stagesData.map(s => [s.id, Object.fromEntries(s.checks.map((_, i) => [i, false]))])),
+      journal: { fans:"unknown", image:"unknown", drivers:"unknown", artifacts:"unknown", temp:"unknown", power:"unknown" }
+    };
+
+    function el(tag, attrs={}, children=[]) {
+      const node = document.createElement(tag);
+      Object.entries(attrs).forEach(([k,v])=>{ if(k === "class") node.className = v; else node.setAttribute(k,v); });
+      (Array.isArray(children) ? children : [children]).forEach(child=>{
+        if(child === null || child === undefined) return;
+        if(typeof child === "string") node.appendChild(document.createTextNode(child));
+        else node.appendChild(child);
+      });
+      return node;
+    }
+
+    function makeButtons(currentValue, onChange, type="journal"){
+      const wrap = el("div", {class:"btns"});
+      const defs = type === "journal"
+        ? [["good","норма"],["bad","проблема"],["unknown","неизвестно"]]
+        : [["ok","всё нормально"],["issue","есть проблема"],["pending","сбросить"]];
+      defs.forEach(([value,label])=>{
+        const btn = el("button", {}, label);
+        const refresh = ()=>{
+          btn.className = "";
+          if(currentValue() === value){
+            if(value === "ok" || value === "good") btn.classList.add("active-ok");
+            else if(value === "issue" || value === "bad") btn.classList.add("active-issue");
+            else btn.classList.add("active-neutral");
+          }
+        };
+        btn.addEventListener("click", ()=>{ onChange(value); render(); });
+        btn._refresh = refresh;
+        wrap.appendChild(btn);
+      });
+      wrap.refresh = ()=>[...wrap.children].forEach(b => b._refresh && b._refresh());
+      return wrap;
+    }
+
+    function statusNode(status){
+      const map = { pending:["Ожидает отметки","status"], ok:["Норма","status ok"], issue:["Есть проблема","status issue"] };
+      const [text, cls] = map[status];
+      return el("div", {class:cls}, text);
+    }
+
+    function bulletBlock(title, items){
+      const box = el("div", {class:"detail-card"});
+      box.appendChild(el("div", {class:"mini-title"}, title));
+      const wrap = el("div", {class:"bullets"});
+      items.forEach((item, idx)=>{
+        wrap.appendChild(el("div", {class:"bullet"}, [
+          el("span", {class:"num"}, String(idx+1).padStart(2,"0")),
+          el("span", {}, item)
+        ]));
+      });
+      box.appendChild(wrap);
+      return box;
+    }
+
+    function renderRoute(){
+      const mount = document.getElementById("routeList");
+      mount.innerHTML = "";
+      route.forEach((item,i)=>{
+        mount.appendChild(el("div",{class:"route-item"},[
+          el("div",{style:"display:flex;gap:12px;align-items:flex-start"},[
+            el("span",{style:"margin-top:2px;font-size:11px;text-transform:uppercase;letter-spacing:.24em;color:#f87171"},String(i+1).padStart(2,"0")),
+            el("span",{class:"text"},item)
+          ])
+        ]));
+      });
+    }
+
+    function renderScrews(){
+      const mount = document.getElementById("screwGrid");
+      mount.innerHTML = "";
+      screwGroups.forEach(g=>{
+        mount.appendChild(el("div",{class:"screw-item"},[
+          el("div",{style:"margin-bottom:10px;font-size:14px;text-transform:uppercase;letter-spacing:.18em;color:#fff"},g.title),
+          el("p",{class:"text"},g.text)
+        ]));
+      });
+    }
+
+    function renderJournal(){
+      const mount = document.getElementById("journalGrid");
+      mount.innerHTML = "";
+      journalFields.forEach(field=>{
+        const box = el("div", {class:"box"});
+        box.appendChild(el("div", {style:"margin-bottom:12px;font-size:14px;text-transform:uppercase;letter-spacing:.18em;"}, field.label));
+        const btns = makeButtons(()=>state.journal[field.key], value=>{state.journal[field.key]=value;}, "journal");
+        btns.refresh();
+        box.appendChild(btns);
+        mount.appendChild(box);
+      });
+    }
+
+    function renderStages(){
+      const mount = document.getElementById("stagesMount");
+      mount.innerHTML = "";
+      stagesData.forEach(stage=>{
+        const checkedCount = Object.values(state.checklist[stage.id]).filter(Boolean).length;
+        const panel = el("section", {class:"stage-panel"}, [
+          el("div", {class:"between", style:"margin-bottom:18px"}, [
+            el("div", {}, [
+              el("p", {class:"eyebrow"}, `Этап ${stage.step} / подробный разбор`),
+              el("h2", {style:"font-size:34px;letter-spacing:.22em;"}, stage.title)
+            ]),
+            statusNode(state.stageStatus[stage.id])
+          ])
+        ]);
+
+        const layout = el("div", {class:"stage-layout"});
+
+        const c1 = el("div", {class:"stack"}, [
+          el("div", {class:"box"}, [ el("span", {class:"label"}, "Сложным языком"), el("p", {class:"text"}, stage.technical) ]),
+          el("div", {class:"box"}, [ el("span", {class:"label"}, "Простым языком"), el("p", {class:"text"}, stage.simple) ]),
+          bulletBlock("Чего нельзя делать", stage.donts)
+        ]);
+
+        const c2 = el("div", {class:"stack"});
+        const checkBox = el("div", {class:"box"}, [el("span", {class:"label"}, "Что именно проверяешь")]);
+        const checklist = el("div", {class:"checklist"});
+        stage.checks.forEach((item, i)=>{
+          const label = el("label", {class:"check"});
+          const input = el("input", {type:"checkbox"});
+          input.checked = state.checklist[stage.id][i];
+          input.addEventListener("change", ()=>{ state.checklist[stage.id][i] = input.checked; render(); });
+          label.appendChild(input);
+          label.appendChild(el("span", {}, item));
+          checklist.appendChild(label);
+        });
+        checkBox.appendChild(checklist);
+        checkBox.appendChild(el("div", {class:"muted", style:"margin-top:14px;font-size:12px;text-transform:uppercase;letter-spacing:.18em;"}, `Выполнено ${checkedCount} / ${stage.checks.length}${checkedCount === stage.checks.length ? " можно ставить итог" : ""}`));
+        c2.appendChild(checkBox);
+        c2.appendChild(bulletBlock("Какую проблему ищем", stage.problems));
+
+        const c3 = el("div", {class:"stack"});
+        c3.appendChild(bulletBlock("Какие выводы делаешь", stage.conclusions));
+        const resultBox = el("div", {class:"box"}, [el("span", {class:"label"}, "Итог этапа")]);
+        const btns = makeButtons(()=>state.stageStatus[stage.id], value=>{state.stageStatus[stage.id]=value;}, "stage");
+        btns.refresh();
+        resultBox.appendChild(btns);
+
+        let hint = "Сначала отметь, что увидел на этом шаге, потом двигайся дальше.";
+        if(state.stageStatus[stage.id] === "ok") hint = "По этому этапу всё выглядит нормально значит пляшем дальше и переходим к следующему шагу.";
+        if(state.stageStatus[stage.id] === "issue") hint = "На этом этапе замечена проблема. Не перескакивай: именно здесь могла скрываться причина неисправности.";
+        resultBox.appendChild(el("div", {class:"hint"}, hint));
+        c3.appendChild(resultBox);
+
+        layout.appendChild(c1); layout.appendChild(c2); layout.appendChild(c3);
+        panel.appendChild(layout);
+        mount.appendChild(panel);
+      });
+    }
+
+    function renderFaults(){
+      const mount = document.getElementById("faultList");
+      mount.innerHTML = "";
+      faults.forEach(([name,target])=>{
+        mount.appendChild(el("div",{class:"fault"},[
+          el("div",{},[
+            el("div",{style:"font-size:14px;text-transform:uppercase;letter-spacing:.18em;margin-bottom:8px"},name),
+            el("div",{class:"text"},`Приоритетная зона: ${target}`)
+          ]),
+          el("div",{style:"color:#f87171;font-size:18px"},"›")
+        ]));
+      });
+    }
+
+    function getTips(){
+      const j = state.journal;
+      const tips = [];
+      if(j.image === "bad") tips.push("Изображения нет: начни с посадки карты, питания 8-pin/6-pin и видеовыходов. Только потом делай тяжёлые выводы о самом GPU.");
+      if(j.drivers === "bad") tips.push("Драйвер не ставится или код 43: приоритет у памяти, GPU и всего, что выглядит как следы прошлой пайки, перегрева или неравномерного охлаждения.");
+      if(j.artifacts === "bad") tips.push("Есть артефакты: внимательно перечитай этап осмотра памяти и термопрокладок. Именно там часто прячется причина.");
+      if(j.temp === "bad") tips.push("Высокая температура почти всегда упирается в прижим, пасту, прокладки или вентиляторы, а не только в чип.");
+      if(j.fans === "bad") tips.push("Вентиляторы не крутятся: проверь шлейфы, разъёмы и механическое закусывание вентилятора.");
+      if(j.power === "bad") tips.push("Если есть вопросы по питанию сосредоточься на зоне разъёма питания и VRM, даже если GPU визуально выглядит нормально.");
+      if(!tips.length) tips.push("По журналу пока нет явной проблемы. Значит пляшем дальше: аккуратно собирай карту, не перепутай винты и прокладки, и тестируй уже в системе.");
+      return tips;
+    }
+
+    function finalSummary(){
+      const statuses = Object.values(state.stageStatus);
+      const normal = statuses.filter(v=>v==="ok").length;
+      const issue = statuses.filter(v=>v==="issue").length;
+      const allNormal = normal === stagesData.length;
+      const anyIssue = issue > 0 || Object.values(state.journal).includes("bad");
+      if(allNormal && !anyIssue){
+        return {
+          title:"Итог: по разбору явных критичных дефектов не найдено",
+          body:"Все этапы визуально пройдены без явных проблем. Значит пляшем дальше: основная проверка уже переносится в систему драйвер, температуры, артефакты, поведение под нагрузкой."
+        };
+      }
+      if(anyIssue){
+        return {
+          title:"Итог: найдены подозрительные зоны",
+          body:"Во время разбора отмечены реальные проблемы или настораживающие признаки. Не игнорируй их ради желания «докопаться до чипа» часто причина уже была видна раньше."
+        };
+      }
+      return {
+        title:"Итог: разбор ещё не завершён",
+        body:"Некоторые этапы не отмечены. Дойди маршрут до конца: винты, шлейфы, термоинтерфейсы, силовая зона, powered-тесты и выводы по каждому шагу."
+      };
+    }
+
+    function renderTips(){
+      const mount = document.getElementById("tipsList");
+      mount.innerHTML = "";
+      getTips().forEach(tip=>{
+        mount.appendChild(el("div",{class:"tip-item"}, el("p",{class:"text"},tip)));
+      });
+    }
+
+    function renderSummary(){
+      const statuses = Object.values(state.stageStatus);
+      const completed = statuses.filter(v=>v!=="pending").length;
+      const normal = statuses.filter(v=>v==="ok").length;
+      const issue = statuses.filter(v=>v==="issue").length;
+      const progress = Math.round(completed / stagesData.length * 100);
+
+      document.getElementById("progressText").textContent = progress + "%";
+      document.getElementById("progressBar").style.width = progress + "%";
+      document.getElementById("normalCount").textContent = normal;
+      document.getElementById("issueCount").textContent = issue;
+      document.getElementById("pendingCount").textContent = stagesData.length - completed;
+      document.getElementById("sumNormal").textContent = normal;
+      document.getElementById("sumIssue").textContent = issue;
+      document.getElementById("sumCompleted").textContent = `${completed} / ${stagesData.length}`;
+      document.getElementById("sumProgress").textContent = progress + "%";
+
+      const summary = finalSummary();
+      document.getElementById("finalTitle").textContent = summary.title;
+      document.getElementById("finalBody").textContent = summary.body;
+
+      const notes = document.getElementById("notes").value.trim();
+      const notesOutput = document.getElementById("notesOutput");
+      if(notes){
+        notesOutput.style.display = "block";
+        notesOutput.textContent = "Твои заметки:\n" + notes;
+      } else {
+        notesOutput.style.display = "none";
+        notesOutput.textContent = "";
+      }
+    }
+
+
+    function activateReveal(){
+      const nodes = document.querySelectorAll('.reveal');
+      if(!('IntersectionObserver' in window)){
+        nodes.forEach(n=>n.classList.add('visible'));
+        return;
+      }
+      const obs = new IntersectionObserver((entries)=>{
+        entries.forEach(entry=>{
+          if(entry.isIntersecting){
+            entry.target.classList.add('visible');
+            obs.unobserve(entry.target);
+          }
+        });
+      }, {threshold:0.08, rootMargin:'0px 0px -20px 0px'});
+      nodes.forEach(n=>obs.observe(n));
+    }
+
+    function render(){
+      renderRoute();
+      renderScrews();
+      renderJournal();
+      renderStages();
+      renderFaults();
+      renderTips();
+      renderSummary();
+      document.getElementById("notes").oninput = renderSummary;
+      activateReveal();
+    }
+    render();
+  </script>
+</body>
+</html>
